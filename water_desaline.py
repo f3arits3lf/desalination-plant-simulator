@@ -13,18 +13,42 @@ Welcome to the Desalination Plant Simulator! This tool allows you to model the d
 # Sidebar Inputs
 st.sidebar.header("Plant Parameters")
 
-# Input Parameters
+# Basic Functional Plant Parameters (Always Enabled)
 feedwater_salinity = st.sidebar.slider("Feedwater Salinity (ppm)", min_value=1000, max_value=50000, value=35000, step=500)
 energy_use = st.sidebar.slider("Energy Use (kWh per cubic meter)", min_value=2.0, max_value=10.0, value=3.5, step=0.1)
 treatment_efficiency = st.sidebar.slider("Treatment Efficiency (%)", min_value=30, max_value=90, value=50, step=5)
-
-# Additional Input Parameters
-plant_capacity = st.sidebar.slider("Plant Capacity (cubic meters per day)", min_value=1000, max_value=50000, value=10000, step=1000)
 intake_flow_rate = st.sidebar.slider("Intake Flow Rate (cubic meters per hour)", min_value=50, max_value=500, value=100, step=10)
-carbon_emission_factor = st.sidebar.slider("Carbon Emission Factor (kg CO2 per kWh)", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
-cost_of_chemicals_per_m3 = st.sidebar.slider("Cost of Chemicals per Cubic Meter ($/m^3)", min_value=0.05, max_value=1.0, value=0.25, step=0.05)
-labor_cost_per_day = st.sidebar.slider("Labor Cost per Day ($)", min_value=100, max_value=2000, value=500, step=50)
-maintenance_cost_per_day = st.sidebar.slider("Maintenance Cost per Day ($)", min_value=50, max_value=1000, value=200, step=25)
+
+# Advanced Parameters with Optional Checkboxes
+use_plant_capacity = st.sidebar.checkbox("Enable Plant Capacity Parameter", value=True)
+if use_plant_capacity:
+    plant_capacity = st.sidebar.slider("Plant Capacity (cubic meters per day)", min_value=1000, max_value=50000, value=10000, step=1000)
+else:
+    plant_capacity = None
+
+use_carbon_emission_factor = st.sidebar.checkbox("Enable Carbon Emission Factor Parameter", value=True)
+if use_carbon_emission_factor:
+    carbon_emission_factor = st.sidebar.slider("Carbon Emission Factor (kg CO2 per kWh)", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
+else:
+    carbon_emission_factor = 0.0  # Assume no emissions if not enabled
+
+use_chemical_cost = st.sidebar.checkbox("Enable Cost of Chemicals Parameter", value=True)
+if use_chemical_cost:
+    cost_of_chemicals_per_m3 = st.sidebar.slider("Cost of Chemicals per Cubic Meter ($/m^3)", min_value=0.05, max_value=1.0, value=0.25, step=0.05)
+else:
+    cost_of_chemicals_per_m3 = 0.0  # Assume no chemical cost if not enabled
+
+use_labor_cost = st.sidebar.checkbox("Enable Labor Cost Parameter", value=True)
+if use_labor_cost:
+    labor_cost_per_day = st.sidebar.slider("Labor Cost per Day ($)", min_value=100, max_value=2000, value=500, step=50)
+else:
+    labor_cost_per_day = 0.0  # Assume no labor cost if not enabled
+
+use_maintenance_cost = st.sidebar.checkbox("Enable Maintenance Cost Parameter", value=True)
+if use_maintenance_cost:
+    maintenance_cost_per_day = st.sidebar.slider("Maintenance Cost per Day ($)", min_value=50, max_value=1000, value=200, step=25)
+else:
+    maintenance_cost_per_day = 0.0  # Assume no maintenance cost if not enabled
 
 # Constants
 water_density = 1000  # kg/m^3
