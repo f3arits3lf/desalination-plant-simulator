@@ -100,26 +100,31 @@ st.write(f"**Total Operational Cost:** ${total_operational_cost:.2f} per day")
 # Plotting Trade-offs
 st.subheader("Trade-off Visualization")
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax1 = plt.subplots(figsize=(10, 6))
 
-# Freshwater Production vs Energy Use
+# Plot Freshwater Production and Waste Brine Generation on the Primary Y-Axis
+ax1.set_xlabel('Energy Use (kWh per cubic meter)')
+ax1.set_ylabel('Flow Rate (m^3/hr)', color='tab:blue')
 energy_values = np.linspace(2, 10, 100)
 freshwater_values = [calculate_outputs(feedwater_salinity, e, treatment_efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)[0] for e in energy_values]
-ax.plot(energy_values, freshwater_values, label='Freshwater Production (m^3/hr)', color='b')
-
-# Waste Brine vs Energy Use
 waste_brine_values = [calculate_outputs(feedwater_salinity, e, treatment_efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)[1] for e in energy_values]
-ax.plot(energy_values, waste_brine_values, label='Waste Brine Generation (m^3/hr)', color='r')
+ax1.plot(energy_values, freshwater_values, label='Freshwater Production (m^3/hr)', color='b')
+ax1.plot(energy_values, waste_brine_values, label='Waste Brine Generation (m^3/hr)', color='r')
+ax1.tick_params(axis='y', labelcolor='tab:blue')
 
-# Energy Cost vs Energy Use
+# Create a Secondary Y-Axis for Energy Cost
+ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+ax2.set_ylabel('Energy Cost ($/m^3)', color='tab:green')
 energy_cost_values = [calculate_outputs(feedwater_salinity, e, treatment_efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)[2] for e in energy_values]
-ax.plot(energy_values, energy_cost_values, label='Energy Cost ($/m^3)', color='g')
+ax2.plot(energy_values, energy_cost_values, label='Energy Cost ($/m^3)', color='g', linestyle='--')
+ax2.tick_params(axis='y', labelcolor='tab:green')
 
-ax.set_xlabel('Energy Use (kWh per cubic meter)')
-ax.set_ylabel('Values')
-ax.set_title('Trade-offs in Desalination Plant Operation')
-ax.legend()
+# Adding Legends
+fig.tight_layout()  # to ensure everything fits without overlapping
+ax1.legend(loc='upper left')
+ax2.legend(loc='upper right')
 
+# Show Plot
 st.pyplot(fig)
 
 # Conclusion
