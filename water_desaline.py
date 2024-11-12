@@ -97,6 +97,21 @@ st.write(f"**Daily Freshwater Production:** {daily_freshwater_production:.2f} cu
 st.write(f"**Carbon Emissions:** {carbon_emissions:.2f} kg CO2 per day")
 st.write(f"**Total Operational Cost:** ${total_operational_cost:.2f} per day")
 
+# Find Optimum Efficiency
+optimum_efficiency = None
+min_cost = float('inf')
+optimal_energy_use = 0
+optimal_treatment_efficiency = 0
+
+# Loop through possible values to determine the optimal configuration
+for energy in np.linspace(2.0, 10.0, 50):
+    for efficiency in range(30, 91, 5):
+        _, _, _, _, _, cost = calculate_outputs(feedwater_salinity, energy, efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)
+        if cost < min_cost:
+            min_cost = cost
+            optimum_efficiency = efficiency
+            optimal_energy_use = energy
+
 # Plotting Trade-offs
 st.subheader("Trade-off Visualization")
 
@@ -121,6 +136,10 @@ energy_cost_values = [calculate_outputs(feedwater_salinity, e, treatment_efficie
 ax2.plot(energy_values, energy_cost_values, label='Energy Cost ($/m^3)', color='g', linestyle='--', linewidth=2)
 ax2.tick_params(axis='y', labelcolor='tab:green')
 
+# Mark Optimum Point
+ax1.axvline(optimal_energy_use, color='purple', linestyle=':', linewidth=2, label='Optimal Energy Use')
+ax2.axhline(min_cost / daily_freshwater_production, color='purple', linestyle=':', linewidth=2, label='Optimal Cost')
+
 # Adding Legends
 fig.tight_layout()  # to ensure everything fits without overlapping
 ax1.legend(loc='upper left')
@@ -137,6 +156,8 @@ st.markdown("""
 - **Energy Cost**: There is a direct relationship between energy use and the cost of desalinated water, highlighting the importance of optimizing energy usage.
 - **Carbon Emissions**: Higher energy use not only increases costs but also contributes to higher carbon emissions, making energy efficiency critical for sustainable desalination.
 - **Operational Costs**: Chemical, labor, and maintenance costs are significant contributors to the overall cost, and optimizing these factors is crucial for economic sustainability.
+
+- **Optimal Efficiency**: The optimal configuration is marked on the chart, representing the lowest operational cost for a given energy use and treatment efficiency.
 
 Experiment with the sliders on the left to see how each factor affects the output and find the best balance for efficient desalination.
 """)
