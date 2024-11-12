@@ -115,41 +115,12 @@ def find_optimal_parameters():
 
 find_optimal_parameters()
 
-# Plotting Trade-offs
-st.subheader("Trade-off Visualization")
+# Display Optimum Efficiency Results
+st.subheader("Optimal Efficiency Configuration")
 
-fig, ax1 = plt.subplots(figsize=(10, 6))
-
-# Plot Freshwater Production and Waste Brine Generation on the Primary Y-Axis
-ax1.set_xlabel('Energy Use (kWh per cubic meter)')
-ax1.set_ylabel('Flow Rate (m^3/hr)', color='tab:blue')
-ax1.set_ylim(100, 200)  # Adjusted range for better clarity
-energy_values = np.linspace(2, 10, 100)
-freshwater_values = [calculate_outputs(feedwater_salinity, e, treatment_efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)[0] for e in energy_values]
-waste_brine_values = [calculate_outputs(feedwater_salinity, e, treatment_efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)[1] for e in energy_values]
-ax1.plot(energy_values, freshwater_values, label='Freshwater Production (m^3/hr)', color='b', linestyle='-', linewidth=2)
-ax1.plot(energy_values, waste_brine_values, label='Waste Brine Generation (m^3/hr)', color='r', linestyle='-.', linewidth=2)
-ax1.tick_params(axis='y', labelcolor='tab:blue')
-
-# Create a Secondary Y-Axis for Energy Cost
-ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-ax2.set_ylabel('Energy Cost ($/m^3)', color='tab:green')
-ax2.set_ylim(0, 1.5)  # Adjusted range for better clarity
-energy_cost_values = [calculate_outputs(feedwater_salinity, e, treatment_efficiency, plant_capacity, intake_flow_rate, carbon_emission_factor, cost_of_chemicals_per_m3, labor_cost_per_day, maintenance_cost_per_day)[2] for e in energy_values]
-ax2.plot(energy_values, energy_cost_values, label='Energy Cost ($/m^3)', color='g', linestyle='--', linewidth=2)
-ax2.tick_params(axis='y', labelcolor='tab:green')
-
-# Mark Optimum Point Dynamically
-ax1.axvline(optimal_energy_use, color='purple', linestyle=':', linewidth=2, label='Optimal Energy Use')
-ax2.axhline(min_cost / daily_freshwater_production, color='purple', linestyle=':', linewidth=2, label='Optimal Cost')
-
-# Adding Legends
-fig.tight_layout()  # to ensure everything fits without overlapping
-ax1.legend(loc='upper left')
-ax2.legend(loc='upper right')
-
-# Show Plot
-st.pyplot(fig)
+st.write(f"**Optimal Treatment Efficiency:** {optimum_efficiency}%")
+st.write(f"**Optimal Energy Use:** {optimal_energy_use:.2f} kWh per cubic meter")
+st.write(f"**Minimum Operational Cost:** ${min_cost:.2f} per day")
 
 # Conclusion
 st.markdown("""
@@ -160,7 +131,7 @@ st.markdown("""
 - **Carbon Emissions**: Higher energy use not only increases costs but also contributes to higher carbon emissions, making energy efficiency critical for sustainable desalination.
 - **Operational Costs**: Chemical, labor, and maintenance costs are significant contributors to the overall cost, and optimizing these factors is crucial for economic sustainability.
 
-- **Optimal Efficiency**: The optimal configuration is marked on the chart, representing the lowest operational cost for a given energy use and treatment efficiency.
+- **Optimal Efficiency**: The optimal configuration for energy use and treatment efficiency is displayed above, representing the lowest operational cost for the given input parameters.
 
 Experiment with the sliders on the left to see how each factor affects the output and find the best balance for efficient desalination.
 """)
